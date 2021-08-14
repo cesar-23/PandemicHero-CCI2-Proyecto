@@ -1,39 +1,48 @@
-#include <iostream>
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include <Windows.h>
+#include "Dependency.h"
+#include "Level.h"
 
-using namespace std;
-int ancho = 800, alto = 600;
 
-int myX = 0, myY = 0;
 
-void crecer() {
-	myX++;
-	myY++;
+
+
+
+int main(void) {
+
+    // inicializamos las librerías utilizadas
+    al_init();
+    al_init_font_addon();
+    al_init_ttf_addon();
+    al_init_image_addon();
+    al_install_keyboard();
+    al_install_mouse();
+
+
+    ALLEGRO_DISPLAY* display = al_create_display(800, 600);
+    ALLEGRO_TIMER* timer = NULL;
+
+
+    al_set_window_title(display, "Pandemic Hero");
+    sistema.img = al_load_bitmap("sources/image/fondo2.jpg");
+    sistema.fondo = al_map_rgb(255, 255, 255);
+    sistema.FPS = 240;
+
+
+    timer = al_create_timer(1.0 / sistema.FPS);
+
+
+    // creo lista de eventos
+
+    sistema.Mis_eventos = al_create_event_queue();
+
+    // asigno eventos a la lista de eventos
+
+    al_register_event_source(sistema.Mis_eventos, al_get_keyboard_event_source());
+    al_register_event_source(sistema.Mis_eventos, al_get_mouse_event_source());
+    al_register_event_source(sistema.Mis_eventos, al_get_display_event_source(display));
+    al_register_event_source(sistema.Mis_eventos, al_get_timer_event_source(timer));
+    al_start_timer(timer);
+    
+    menu();
+
+    al_destroy_display(display);
 }
-
-int main() {
-	
-	//Todo esto ira dentro de un init(), recordar adaptar todo a clases para poder manejar nuestros objetos
-	al_init();
-	al_init_font_addon();
-	al_init_ttf_addon();
-	ALLEGRO_DISPLAY* ventana = al_create_display(ancho, alto);
-	ALLEGRO_FONT* GoticFont = al_load_font("sources/fonts/Gotic.otf",40,0);
-	al_set_window_title(ventana, "Pandemic Hero");
-	int ancho_W = GetSystemMetrics(SM_CXSCREEN);
-	int alto_W = GetSystemMetrics(SM_CYSCREEN);
-	al_set_window_position(ventana, ancho_W / 2 - ancho / 2, alto_W / 2 - alto / 2);
-
-	while (true)
-	{
-		al_draw_text(GoticFont, al_map_rgb(255, 255, 255),myX,myY, NULL, "Hello World");
-		crecer();
-		al_flip_display();
-	}
-
-	return 0;
-}
-
